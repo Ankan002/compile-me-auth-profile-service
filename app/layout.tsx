@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@/components/theme-provider";
 import { RecoilContextProvider } from "components/elements";
 import "./globals.css";
 
@@ -10,7 +11,9 @@ export default function RootLayout({
         <html lang="en">
             <head />
             <body>
-                <RecoilContextProvider>{children}</RecoilContextProvider>
+                <RecoilContextProvider>
+                    <ThemeProvider>{children}</ThemeProvider>
+                </RecoilContextProvider>
             </body>
         </html>
     );
