@@ -1,3 +1,4 @@
+import { LoginBtn } from "components/elements";
 import LoginHeroImage from "assets/login-hero-image.png";
 import Image from "next/image";
 
@@ -13,6 +14,11 @@ export default function Home() {
             <p className="font-fira-code text-xl tracking-wider text-primary-dark dark:text-primary-light mt-5 md:w-1/3 sm:w-2/3 w-full text-center">
                 Sign in to the world of tech and software
             </p>
+
+            <div className="flex items-center justify-center mt-4">
+                <LoginBtn provider="google" />
+                <LoginBtn provider="github" />
+            </div>
         </main>
     );
 }

@@ -22,7 +22,7 @@ const ThemeToggler = () => {
     };
 
     return (
-        <button className="border-2 rounded-md border-primary-dark bg-primary-yellow p-2 dark:border-primary-light dark:bg-primary-orange fixed bottom-5 right-5 hover:shadow-md text-primary-dark dark:text-primary-light transition-none" onClick={onChangeThemeClick} aria-label="toggle-theme">
+        <button className="border-2 rounded-md border-primary-dark bg-primary-yellow p-2 dark:border-primary-light dark:bg-primary-orange fixed bottom-5 right-5 hover:shadow-md text-primary-dark dark:text-primary-light transition-none select-none" onClick={onChangeThemeClick} aria-label="toggle-theme">
             {
                 (currentTheme === "light") ? (
                     <FaMoon size={19} />
