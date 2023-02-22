@@ -3,13 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build-dev": "next build",
+    "db-migrate": "npx prisma migrate deploy",
+    "db-push": "npx prisma db push",
+    "db-pull": "npx prisma db pull",
+    "db-generate": "npx prisma generate",
     "dev": "next dev",
-    "build": "next build",
+    "build": "yarn db-migrate && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@next/font": "13.1.6",
+    "@prisma/client": "^4.10.1",
     "@types/node": "18.13.0",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
@@ -27,6 +33,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
+    "prisma": "^4.10.1",
     "tailwindcss": "^3.2.7"
   }
 }
