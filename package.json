@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build-dev": "next build",
-    "db-migrate": "npx prisma migrate deploy",
+    "db-migrate": "npx prisma migrate resolve && npx prisma migrate deploy",
     "db-push": "npx prisma db push",
     "db-pull": "npx prisma db pull",
     "db-generate": "npx prisma generate",
