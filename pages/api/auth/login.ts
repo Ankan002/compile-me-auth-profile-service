@@ -14,7 +14,7 @@ const login = (req: NextApiRequest, res: NextApiResponse) => {
         res,
         httpOnly: true,
         secure: process.env.NODE_ENV === "development" ? false : true,
-        domain: process.env.NODE_ENV === "development" ? "localhost" : ".compile-me.com"
+        domain: process.env.NODE_ENV === "development" ? "localhost" : "playground.compile-me.com"
     });
 
     return res.status(200).json({
