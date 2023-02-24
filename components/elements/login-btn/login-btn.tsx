@@ -39,18 +39,6 @@ const LoginBtn = (props: Props) => {
 
             console.log(googleFirebaseUserInfo);
 
-            const apiRes = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                },
-                credentials: "include",
-            });
-
-            const data = await apiRes.json();
-
-            console.log(data);
-
             await signOut(auth);
 
             setIsAutheticating(false);

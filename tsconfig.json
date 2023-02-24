@@ -27,7 +27,9 @@
             "atoms/*": ["./atoms/*"],
             "types/*": ["./types/*"],
             "config/*": ["./config/*"],
-            "helpers/*": ["./helpers/*"]
+            "helpers/*": ["./helpers/*"],
+            "constants/*": ["./constants/*"],
+            "utils/*": ["./utils/*"]
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
