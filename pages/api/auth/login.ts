@@ -89,9 +89,9 @@ const login = async (
 
             const authToken = jwt.sign(
                 loginJWTData,
-                process.env.LOGIN_JWT_SECRET ?? "",
+                process.env.AUTH_JWT_SECRET ?? "",
                 {
-                    expiresIn: process.env.LOGIN_JWT_EXPIRATION_TIME ?? "",
+                    expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
                 }
             );
 
@@ -150,9 +150,9 @@ const login = async (
 
         const authToken = jwt.sign(
             loginJWTData,
-            process.env.LOGIN_JWT_SECRET ?? "",
+            process.env.AUTH_JWT_SECRET ?? "",
             {
-                expiresIn: process.env.LOGIN_JWT_EXPIRATION_TIME ?? "",
+                expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
             }
         );
 
