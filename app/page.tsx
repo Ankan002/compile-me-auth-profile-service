@@ -1,8 +1,22 @@
 import { LoginBtn } from "components/elements";
 import LoginHeroImage from "assets/login-hero-image.png";
 import Image from "next/image";
+import { decodeAuthUrl } from "utils";
 
-export default function Home() {
+interface Props {
+    searchParams: {
+        authUrlToken: string;
+    }
+}
+
+export default function Home(props: Props) {
+    const { searchParams } = props;
+
+    const { authUrlToken } = searchParams;
+
+    decodeAuthUrl(authUrlToken);
+
+
     return (
         <main className="min-h-screen flex flex-col w-full bg-primary-light dark:bg-primary-dark items-center justify-center p-3">
             <Image src={LoginHeroImage.src} width={400} height={400} alt="" className="sm:w-96 sm:h-96 w-80 h-80" priority />
