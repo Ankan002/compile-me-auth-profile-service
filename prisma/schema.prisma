@@ -18,14 +18,14 @@ enum AUTH_PROVIDER {
 model User {
   id                 String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name               String
-  username           String
+  username           String        @unique
   avatar             String
   profile_pic        String
   email              String
   provider           AUTH_PROVIDER
   provider_id        String
-  github_username    String
-  github_profile_url String
+  github_username    String?
+  github_profile_url String?
   is_deactivated     Boolean       @default(false)
   is_banned          Boolean       @default(false)
 }
