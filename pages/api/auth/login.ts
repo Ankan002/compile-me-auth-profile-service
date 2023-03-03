@@ -67,6 +67,7 @@ const login = async (
     }
 
     const prisma = getPrismaClient();
+    const AUTH_JWT_SECRET = process.env.NODE_ENV === "production" ? process.env.AUTH_JWT_SECRET ?? "" : "auth_jwt_secret";
 
     try {
         const fetchedUser = await prisma.user.findFirst({
@@ -89,7 +90,7 @@ const login = async (
 
             const authToken = jwt.sign(
                 loginJWTData,
-                process.env.AUTH_JWT_SECRET ?? "",
+                AUTH_JWT_SECRET,
                 {
                     expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
                 }
@@ -150,7 +151,7 @@ const login = async (
 
         const authToken = jwt.sign(
             loginJWTData,
-            process.env.AUTH_JWT_SECRET ?? "",
+            AUTH_JWT_SECRET,
             {
                 expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
             }

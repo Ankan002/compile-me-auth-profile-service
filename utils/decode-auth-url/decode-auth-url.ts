@@ -1,20 +1,10 @@
-import jwt, {Secret} from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 export const decodeAuthUrl = (encodedAuthUrl: string) => {
     console.log(process.env["AUTH_URL_QUERY_JWT_SECRET"])
 
     try {
-        const sec: Secret = process.env.NEXT_PUBLIC_AUTH_URL_QUERY_JWT_SECRET as string;
-
-        // console.log(sec)
-
-        // const someData = {
-        //     d: "Ankan"
-        // };
-
-        // const token = jwt.sign(someData, sec);
-
-        // console.log(token);
+        const sec = process.env.NODE_ENV === "production" ? process.env.AUTH_URL_QUERY_JWT_SECRET as string : "dev_url_secret";
 
         const data = jwt.verify(
             encodedAuthUrl,
