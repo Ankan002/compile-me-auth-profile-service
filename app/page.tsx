@@ -5,16 +5,27 @@ import { decodeAuthUrl } from "utils";
 
 interface Props {
     searchParams: {
-        authUrlToken: string;
+        authUrlToken: string | undefined;
     }
 }
 
 export default function Home(props: Props) {
     const { searchParams } = props;
-
     const { authUrlToken } = searchParams;
+    
+    let authUrl: string | null = null;
 
-    decodeAuthUrl(authUrlToken);
+    console.log(authUrlToken)
+
+    if(authUrlToken){
+        const decodedAuthUrlRes = decodeAuthUrl(authUrlToken);
+
+        console.log(decodedAuthUrlRes);
+
+        if(decodedAuthUrlRes.success && decodedAuthUrlRes.data){
+            authUrl = decodedAuthUrlRes.data.authUrl
+        }
+    }
 
 
     return (
