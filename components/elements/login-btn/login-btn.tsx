@@ -13,7 +13,6 @@ import { BsGoogle, BsGithub } from "react-icons/bs";
 import { getGithubAuthProvider } from "config/get-github-auth-provider";
 import { getUrlDomain } from "utils";
 import { login } from "helpers";
-import jwt from "jsonwebtoken";
 
 interface Props {
     provider: "google" | "github";
@@ -24,12 +23,6 @@ const LoginBtn = (props: Props) => {
     const { provider, authUrl } = props;
 
     const [isAuthenticating, setIsAutheticating] = useState<boolean>(false);
-
-    console.log(authUrl);
-
-    const data = jwt.decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRoVXJsIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIn0.-BJenSyK8xEieabaAfGsz7d4Ne79f65n9CxPMBoyjVI");
-
-    console.log(data);
 
     const signInWithGoogle = async (authDomain: string) => {
         setIsAutheticating(true);
@@ -149,8 +142,6 @@ const LoginBtn = (props: Props) => {
         }
 
         const domainResponse = getUrlDomain(authUrl);
-
-        console.log(domainResponse);
 
         if (!domainResponse.success || !domainResponse.data) {
             console.log(domainResponse.error);
