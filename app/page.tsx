@@ -2,11 +2,16 @@ import { LoginBtn } from "components/elements";
 import LoginHeroImage from "assets/login-hero-image.png";
 import Image from "next/image";
 import { decodeAuthUrl } from "utils";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface Props {
     searchParams: {
         authUrlToken: string | undefined;
     };
+}
+
+interface AuthUrlTokenJWTPayload extends JwtPayload {
+    authUrl: string;
 }
 
 export default function Home(props: Props) {
@@ -15,15 +20,13 @@ export default function Home(props: Props) {
 
     let authUrl: string | null = null;
 
-    console.log(authUrlToken);
-
     if (authUrlToken) {
-        const decodedAuthUrlRes = decodeAuthUrl(authUrlToken);
+        const decodedAuthUrlRes = jwt.decode(authUrlToken) as AuthUrlTokenJWTPayload;
 
         console.log(decodedAuthUrlRes);
 
-        if (decodedAuthUrlRes.success && decodedAuthUrlRes.data) {
-            authUrl = decodedAuthUrlRes.data.authUrl;
+        if (decodedAuthUrlRes.authUrl) {
+            authUrl = decodedAuthUrlRes.authUrl;
         }
     }
 

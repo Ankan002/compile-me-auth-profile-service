@@ -12,6 +12,8 @@ import { useState } from "react";
 import { BsGoogle, BsGithub } from "react-icons/bs";
 import { getGithubAuthProvider } from "config/get-github-auth-provider";
 import { getUrlDomain } from "utils";
+import { login } from "helpers";
+import jwt from "jsonwebtoken";
 
 interface Props {
     provider: "google" | "github";
@@ -22,6 +24,12 @@ const LoginBtn = (props: Props) => {
     const { provider, authUrl } = props;
 
     const [isAuthenticating, setIsAutheticating] = useState<boolean>(false);
+
+    console.log(authUrl);
+
+    const data = jwt.decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJhdXRoVXJsIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIn0.-BJenSyK8xEieabaAfGsz7d4Ne79f65n9CxPMBoyjVI");
+
+    console.log(data);
 
     const signInWithGoogle = async (authDomain: string) => {
         setIsAutheticating(true);
@@ -35,15 +43,33 @@ const LoginBtn = (props: Props) => {
                 auth,
                 googleAuthProvider
             );
-            const googleFirebaseUserInfo = getAdditionalUserInfo(
-                googleFirebaseResponse
-            );
-
-            console.log(googleFirebaseUserInfo);
 
             await signOut(auth);
 
+            if (
+                !googleFirebaseResponse.user.displayName ||
+                !googleFirebaseResponse.providerId ||
+                !googleFirebaseResponse.user.email ||
+                !googleFirebaseResponse.user.photoURL ||
+                googleFirebaseResponse.user.providerData.length < 1
+            ) {
+                setIsAutheticating(false);
+                return;
+            }
+
+            const loginResponse = await login(authDomain, {
+                name: googleFirebaseResponse.user.displayName,
+                provider: "google",
+                provider_id: googleFirebaseResponse.user.providerData[0].uid,
+                email: googleFirebaseResponse.user.email,
+                profile_pic: googleFirebaseResponse.user.photoURL,
+            });
+
+            console.log(loginResponse);
+
             setIsAutheticating(false);
+
+            if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             if (error instanceof Error) {
                 console.log(error.message);
@@ -56,7 +82,7 @@ const LoginBtn = (props: Props) => {
         }
     };
 
-    const signInWithGithub = async (authDoman: string) => {
+    const signInWithGithub = async (authDomain: string) => {
         setIsAutheticating(true);
 
         try {
@@ -72,11 +98,36 @@ const LoginBtn = (props: Props) => {
                 githubFirebaseResponse
             );
 
-            console.log(githubFirebaseUserInfo);
-
             await signOut(auth);
 
+            if (
+                !githubFirebaseUserInfo?.profile ||
+                githubFirebaseResponse.user.providerData.length < 0 ||
+                !githubFirebaseResponse.user.providerData[0].displayName ||
+                !githubFirebaseResponse.user.providerData[0].email ||
+                !githubFirebaseResponse.user.providerData[0].photoURL
+            ) {
+                setIsAutheticating(false);
+                return;
+            }
+
+            const loginResponse = await login(authDomain, {
+                name: githubFirebaseResponse.user.providerData[0].displayName,
+                provider: "github",
+                provider_id: githubFirebaseResponse.user.providerData[0].uid,
+                email: githubFirebaseResponse.user.providerData[0].email,
+                profile_pic:
+                    githubFirebaseResponse.user.providerData[0].photoURL,
+                github_username: githubFirebaseUserInfo.username ?? "",
+                github_profile_url: githubFirebaseUserInfo.profile
+                    .html_url as string,
+            });
+
+            console.log(loginResponse);
+
             setIsAutheticating(false);
+
+            if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             if (error instanceof Error) {
                 console.log(error.message);
@@ -92,7 +143,7 @@ const LoginBtn = (props: Props) => {
     const signIn = () => {
         if (isAuthenticating) return;
 
-        if(!authUrl) {
+        if (!authUrl) {
             console.log("Give a valid URL to authenticate...");
             return;
         }
@@ -101,7 +152,7 @@ const LoginBtn = (props: Props) => {
 
         console.log(domainResponse);
 
-        if(!domainResponse.success || !domainResponse.data) {
+        if (!domainResponse.success || !domainResponse.data) {
             console.log(domainResponse.error);
             return;
         }

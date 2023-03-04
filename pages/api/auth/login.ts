@@ -67,7 +67,8 @@ const login = async (
     }
 
     const prisma = getPrismaClient();
-    const AUTH_JWT_SECRET = process.env.NODE_ENV === "production" ? process.env.AUTH_JWT_SECRET ?? "" : "auth_jwt_secret";
+    
+    const AUTH_JWT_SECRET = process.env.AUTH_JWT_SECRET ?? "";
 
     try {
         const fetchedUser = await prisma.user.findFirst({

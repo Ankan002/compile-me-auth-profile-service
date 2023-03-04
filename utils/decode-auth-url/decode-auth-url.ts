@@ -6,12 +6,9 @@ interface AuthUrlTokenJWTPayload extends JwtPayload {
 
 export const decodeAuthUrl = (encodedAuthUrl: string) => {
     try {
-        const sec =
-            process.env.NODE_ENV === "production"
-                ? (process.env.AUTH_URL_QUERY_JWT_SECRET as string)
-                : "dev_url_secret";
+        const data = jwt.decode(encodedAuthUrl) as AuthUrlTokenJWTPayload;
 
-        const data = jwt.verify(encodedAuthUrl, sec) as AuthUrlTokenJWTPayload;
+        console.log(data);
 
         return {
             success: true,
