@@ -11,17 +11,19 @@ import {
 import { useState } from "react";
 import { BsGoogle, BsGithub } from "react-icons/bs";
 import { getGithubAuthProvider } from "config/get-github-auth-provider";
+import { getUrlDomain } from "utils";
 
 interface Props {
     provider: "google" | "github";
+    authUrl: string | null;
 }
 
 const LoginBtn = (props: Props) => {
-    const { provider } = props;
+    const { provider, authUrl } = props;
 
     const [isAuthenticating, setIsAutheticating] = useState<boolean>(false);
 
-    const signInWithGoogle = async () => {
+    const signInWithGoogle = async (authDomain: string) => {
         setIsAutheticating(true);
 
         try {
@@ -54,7 +56,7 @@ const LoginBtn = (props: Props) => {
         }
     };
 
-    const signInWithGithub = async () => {
+    const signInWithGithub = async (authDoman: string) => {
         setIsAutheticating(true);
 
         try {
@@ -90,8 +92,22 @@ const LoginBtn = (props: Props) => {
     const signIn = () => {
         if (isAuthenticating) return;
 
-        if (provider === "google") signInWithGoogle();
-        else signInWithGithub();
+        if(!authUrl) {
+            console.log("Give a valid URL to authenticate...");
+            return;
+        }
+
+        const domainResponse = getUrlDomain(authUrl);
+
+        console.log(domainResponse);
+
+        if(!domainResponse.success || !domainResponse.data) {
+            console.log(domainResponse.error);
+            return;
+        }
+
+        if (provider === "google") signInWithGoogle(domainResponse.data.domain);
+        else signInWithGithub(domainResponse.data.domain);
     };
 
     return (
