@@ -8,8 +8,6 @@ export const decodeAuthUrl = (encodedAuthUrl: string) => {
     try {
         const data = jwt.decode(encodedAuthUrl) as AuthUrlTokenJWTPayload;
 
-        console.log(data);
-
         return {
             success: true,
             data: {
