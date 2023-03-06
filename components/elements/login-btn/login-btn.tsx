@@ -14,6 +14,7 @@ import { getGithubAuthProvider } from "config/get-github-auth-provider";
 import { getUrlDomain } from "utils";
 import { login } from "helpers";
 import { toast } from "react-hot-toast";
+import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 
 interface Props {
     provider: "google" | "github";
@@ -40,8 +41,6 @@ const LoginBtn = (props: Props) => {
                 googleAuthProvider
             );
 
-            console.log(googleFirebaseResponse);
-
             await signOut(auth);
 
             if (
@@ -64,8 +63,6 @@ const LoginBtn = (props: Props) => {
                 profile_pic: googleFirebaseResponse.user.photoURL,
             });
 
-            console.log(loginResponse);
-
             toast.dismiss(loadingToastId);
             setIsAutheticating(false);
 
@@ -76,7 +73,7 @@ const LoginBtn = (props: Props) => {
 
             toast.success("Login Successful!!");
 
-            // if(window !== undefined && authUrl) location.href = authUrl;
+            if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             toast.dismiss(loadingToastId);
 
@@ -91,6 +88,7 @@ const LoginBtn = (props: Props) => {
         }
     };
 
+    // TODO: Test out the GITHUB USER with realtime user.
     const signInWithGithub = async (authDomain: string) => {
         const loadingToastId = toast.loading("Signin In...");
         setIsAutheticating(true);
@@ -117,7 +115,6 @@ const LoginBtn = (props: Props) => {
             if (
                 !githubFirebaseUserInfo?.profile ||
                 githubFirebaseResponse.user.providerData.length < 0 ||
-                !githubFirebaseResponse.user.providerData[0].displayName ||
                 !githubFirebaseResponse.user.providerData[0].photoURL
             ) {
                 toast.dismiss(loadingToastId);
@@ -126,8 +123,14 @@ const LoginBtn = (props: Props) => {
                 return;
             }
 
+            const loginName = githubFirebaseResponse.user.providerData[0].displayName ?? uniqueNamesGenerator({
+                dictionaries: [colors, animals],
+                separator: " ",
+                length: 2
+            });
+
             const loginResponse = await login(authDomain, {
-                name: githubFirebaseResponse.user.providerData[0].displayName,
+                name: loginName,
                 provider: "github",
                 provider_id: githubFirebaseResponse.user.providerData[0].uid,
                 email: githubFirebaseResponse.user.providerData[0].email ?? undefined,
