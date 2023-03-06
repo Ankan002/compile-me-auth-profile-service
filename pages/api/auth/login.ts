@@ -1,11 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 import { z } from "zod";
-import { validMicroserviceDomains } from "constants/valid-microservice-domains";
+import { validMicroserviceDomains, validCorsMicroserviceDomains } from "constants/valid-microservice-domains";
 import { getPrismaClient } from "config/get-primsa-client";
 import jwt from "jsonwebtoken";
 import { addDays } from "date-fns";
 import { generateUsername } from "utils";
+import nextCors from "nextjs-cors";
 
 interface SuccessResponse {
     success: boolean;
@@ -41,6 +42,13 @@ const login = async (
             success: false,
             error: "Internal Server Error!!",
         });
+    }
+
+    if(process.env.NODE_ENV === "production") {
+        await nextCors(req, res, {
+            credentials: true,
+            origin: validCorsMicroserviceDomains
+        })
     }
 
     const requestBodyValidationResult = RequestBodySchema.safeParse(req.body);
