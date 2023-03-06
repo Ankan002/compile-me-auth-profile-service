@@ -118,7 +118,6 @@ const LoginBtn = (props: Props) => {
                 !githubFirebaseUserInfo?.profile ||
                 githubFirebaseResponse.user.providerData.length < 0 ||
                 !githubFirebaseResponse.user.providerData[0].displayName ||
-                !githubFirebaseResponse.user.providerData[0].email ||
                 !githubFirebaseResponse.user.providerData[0].photoURL
             ) {
                 toast.dismiss(loadingToastId);
@@ -131,7 +130,7 @@ const LoginBtn = (props: Props) => {
                 name: githubFirebaseResponse.user.providerData[0].displayName,
                 provider: "github",
                 provider_id: githubFirebaseResponse.user.providerData[0].uid,
-                email: githubFirebaseResponse.user.providerData[0].email,
+                email: githubFirebaseResponse.user.providerData[0].email ?? undefined,
                 profile_pic:
                     githubFirebaseResponse.user.providerData[0].photoURL,
                 github_username: githubFirebaseUserInfo.username ?? "",

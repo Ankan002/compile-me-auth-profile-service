@@ -1,14 +1,10 @@
-import { generateUsername } from "./generate-username";
+import { generateUsernameFromEmail } from "./generate-username";
 import { z } from "zod";
 
 const TestCasesSchema = z.array(
     z.object({
         case: z.object({
             email: z.string().email(),
-            provider: z.union([
-                z.literal("google"),
-                z.literal("github")
-            ])
         }),
         result: z.string()
     })
@@ -18,23 +14,21 @@ const testCases: z.infer<typeof TestCasesSchema> = [
     {
         case: {
             email: "ankanbhattacharya89@gmail.com",
-            provider: "google",
         },
         result: "ankanbhattacharya89_gal",
     },
     {
         case: {
-            email: "ankanbhattacharya89@gmail.com",
-            provider: "github",
+            email: "ankanbhattacharya117@gmail.com",
         },
-        result: "ankanbhattacharya89_git",
+        result: "ankanbhattacharya117_gal",
     },
 ];
 
 testCases.forEach((testCase, index) => {
     test(`Test Case: ${index + 1}`, () => {
         expect(
-            generateUsername(testCase.case.email, testCase.case.provider)
+            generateUsernameFromEmail(testCase.case.email)
         ).toBe(testCase.result);
     });
 });

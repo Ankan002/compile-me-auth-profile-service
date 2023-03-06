@@ -21,7 +21,7 @@ model User {
   username           String        @unique
   avatar             String
   profile_pic        String
-  email              String
+  email              String?
   provider           AUTH_PROVIDER
   provider_id        String
   github_username    String?

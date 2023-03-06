@@ -8,7 +8,7 @@ const LoginUserPayloadSchema = z.object({
         .max(60, "Max length of name can be 60"),
     provider: z.union([z.literal("google"), z.literal("github")]),
     provider_id: z.string(),
-    email: z.string().email(),
+    email: z.string().email().optional(),
     github_username: z.string().optional(),
     github_profile_url: z.string().optional(),
     profile_pic: z.string().url(),
