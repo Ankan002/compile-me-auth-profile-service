@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getPrismaClient } from "config/get-primsa-client";
 import jwt from "jsonwebtoken";
 import { addDays } from "date-fns";
-import { generateUsername } from "utils";
+import { generateUsernameFromEmail, generateUsernameFromGithub } from "utils";
 
 interface SuccessResponse {
     success: boolean;
@@ -23,7 +23,7 @@ const RequestBodySchema = z.object({
             .max(60, "Max length of name can be 60"),
         provider: z.union([z.literal("google"), z.literal("github")]),
         provider_id: z.string(),
-        email: z.string().email(),
+        email: z.string().email().optional(),
         github_username: z.string().optional(),
         github_profile_url: z.string().optional(),
         profile_pic: z.string().url(),
@@ -52,8 +52,15 @@ const login = async (
 
     const requestBody = requestBodyValidationResult.data;
 
+    if (requestBody.user.provider === "google" && !requestBody.user.email) {
+        return res.status(400).json({
+            success: false,
+            error: "Email is required for Google Login",
+        });
+    }
+
     const prisma = getPrismaClient();
-    
+
     const AUTH_JWT_SECRET = process.env.AUTH_JWT_SECRET ?? "";
 
     try {
@@ -75,18 +82,14 @@ const login = async (
                 user: fetchedUser,
             };
 
-            const authToken = jwt.sign(
-                loginJWTData,
-                AUTH_JWT_SECRET,
-                {
-                    expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
-                }
-            );
+            const authToken = jwt.sign(loginJWTData, AUTH_JWT_SECRET, {
+                expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
+            });
 
             setCookie(process.env.AUTH_COOKIE_NAME ?? "", authToken, {
                 domain:
                     process.env.NODE_ENV === "production"
-                        ? process.env.AUTH_COOKIE_URL 
+                        ? process.env.AUTH_COOKIE_URL
                         : "localhost",
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production" ? true : false,
@@ -103,10 +106,12 @@ const login = async (
             });
         }
 
-        const username = generateUsername(
-            requestBody.user.email,
-            requestBody.user.provider
-        );
+        const username =
+            requestBody.user.provider === "google"
+                ? generateUsernameFromEmail(requestBody.user.email ?? "")
+                : generateUsernameFromGithub(
+                      requestBody.user.github_username ?? ""
+                  );
 
         const newUser = await prisma.user.create({
             data: {
@@ -136,18 +141,14 @@ const login = async (
             user: newUser,
         };
 
-        const authToken = jwt.sign(
-            loginJWTData,
-            AUTH_JWT_SECRET,
-            {
-                expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
-            }
-        );
+        const authToken = jwt.sign(loginJWTData, AUTH_JWT_SECRET, {
+            expiresIn: process.env.AUTH_JWT_EXPIRATION_TIME ?? "",
+        });
 
         setCookie(process.env.AUTH_COOKIE_NAME ?? "", authToken, {
             domain:
                 process.env.NODE_ENV === "production"
-                    ? process.env.AUTH_COOKIE_URL 
+                    ? process.env.AUTH_COOKIE_URL
                     : "localhost",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production" ? true : false,

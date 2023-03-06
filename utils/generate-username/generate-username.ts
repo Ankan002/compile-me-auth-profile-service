@@ -1,7 +1,5 @@
-export const generateUsername = (
-    email: string,
-    provider: "google" | "github"
-) =>
-    provider === "google"
-        ? email.split("@")[0] + "_gal"
-        : email.split("@")[0] + "_git";
+export const generateUsernameFromEmail = (email: string) =>
+    email.split("@")[0] + "_gal";
+
+export const generateUsernameFromGithub = (githubUsername: string) =>
+    githubUsername + "_git";
