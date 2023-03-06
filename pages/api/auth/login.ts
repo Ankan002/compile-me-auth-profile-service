@@ -102,7 +102,7 @@ const login = async (
             setCookie(process.env.AUTH_COOKIE_NAME ?? "", authToken, {
                 domain:
                     process.env.NODE_ENV === "production"
-                        ? requestBody.domain_to_be_authenticated
+                        ? "playground.compile-me.com"
                         : "localhost",
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production" ? true : false,
