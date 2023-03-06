@@ -54,6 +54,8 @@ const login = async (
 
     const requestBody = requestBodyValidationResult.data;
 
+    console.log(requestBody.domain_to_be_authenticated);
+
     if (
         process.env.NODE_ENV === "production" &&
         !validMicroserviceDomains.includes(
