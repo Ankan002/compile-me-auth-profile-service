@@ -110,7 +110,6 @@ const login = async (
                     new Date(),
                     Number(process.env.AUTH_COOKIE_EXPIRATION_TIME ?? "0")
                 ),
-                sameSite: "none",
                 req,
                 res,
             });
@@ -172,7 +171,6 @@ const login = async (
                 new Date(),
                 Number(process.env.AUTH_COOKIE_EXPIRATION_TIME ?? "0")
             ),
-            sameSite: "none",
             req,
             res,
         });
