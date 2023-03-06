@@ -33,18 +33,20 @@ const LoginBtn = (props: Props) => {
             const firebaseApp = getFirebaseApp();
             const auth = getAuth(firebaseApp);
             const googleAuthProvider = getGoogleAuthProvider();
+            googleAuthProvider.addScope("email");
 
             const googleFirebaseResponse = await signInWithPopup(
                 auth,
                 googleAuthProvider
             );
 
+            console.log(googleFirebaseResponse);
+
             await signOut(auth);
 
             if (
                 !googleFirebaseResponse.user.displayName ||
                 !googleFirebaseResponse.providerId ||
-                !googleFirebaseResponse.user.email ||
                 !googleFirebaseResponse.user.photoURL ||
                 googleFirebaseResponse.user.providerData.length < 1
             ) {
@@ -58,7 +60,7 @@ const LoginBtn = (props: Props) => {
                 name: googleFirebaseResponse.user.displayName,
                 provider: "google",
                 provider_id: googleFirebaseResponse.user.providerData[0].uid,
-                email: googleFirebaseResponse.user.email,
+                email: googleFirebaseResponse.user.providerData[0].email ?? "",
                 profile_pic: googleFirebaseResponse.user.photoURL,
             });
 
@@ -74,7 +76,7 @@ const LoginBtn = (props: Props) => {
 
             toast.success("Login Successful!!");
 
-            if(window !== undefined && authUrl) location.href = authUrl;
+            // if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             toast.dismiss(loadingToastId);
 
@@ -97,6 +99,7 @@ const LoginBtn = (props: Props) => {
             const firebaseApp = getFirebaseApp();
             const auth = getAuth(firebaseApp);
             const githubAuthProvider = getGithubAuthProvider();
+            githubAuthProvider.addScope("email");
 
             const githubFirebaseResponse = await signInWithPopup(
                 auth,
@@ -105,6 +108,9 @@ const LoginBtn = (props: Props) => {
             const githubFirebaseUserInfo = getAdditionalUserInfo(
                 githubFirebaseResponse
             );
+
+            console.log(githubFirebaseResponse);
+            console.log(githubFirebaseUserInfo);
 
             await signOut(auth);
 
@@ -145,7 +151,7 @@ const LoginBtn = (props: Props) => {
 
             toast.success("Login Successful!!");
 
-            if(window !== undefined && authUrl) location.href = authUrl;
+            // if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             toast.dismiss(loadingToastId);
 
