@@ -41,8 +41,6 @@ const LoginBtn = (props: Props) => {
                 googleAuthProvider
             );
 
-            console.log(googleFirebaseResponse);
-
             await signOut(auth);
 
             if (
@@ -64,8 +62,6 @@ const LoginBtn = (props: Props) => {
                 email: googleFirebaseResponse.user.providerData[0].email ?? "",
                 profile_pic: googleFirebaseResponse.user.photoURL,
             });
-
-            console.log(loginResponse);
 
             toast.dismiss(loadingToastId);
             setIsAutheticating(false);
