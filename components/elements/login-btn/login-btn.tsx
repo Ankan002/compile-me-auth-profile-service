@@ -13,6 +13,7 @@ import { BsGoogle, BsGithub } from "react-icons/bs";
 import { getGithubAuthProvider } from "config/get-github-auth-provider";
 import { getUrlDomain } from "utils";
 import { login } from "helpers";
+import { toast } from "react-hot-toast";
 
 interface Props {
     provider: "google" | "github";
@@ -25,6 +26,7 @@ const LoginBtn = (props: Props) => {
     const [isAuthenticating, setIsAutheticating] = useState<boolean>(false);
 
     const signInWithGoogle = async (authDomain: string) => {
+        const loadingToastId = toast.loading("Signin In...");
         setIsAutheticating(true);
 
         try {
@@ -46,6 +48,8 @@ const LoginBtn = (props: Props) => {
                 !googleFirebaseResponse.user.photoURL ||
                 googleFirebaseResponse.user.providerData.length < 1
             ) {
+                toast.dismiss(loadingToastId);
+                toast.error("Login Failed... Valid login data not available, please contact support...");
                 setIsAutheticating(false);
                 return;
             }
@@ -60,22 +64,33 @@ const LoginBtn = (props: Props) => {
 
             console.log(loginResponse);
 
+            toast.dismiss(loadingToastId);
             setIsAutheticating(false);
+
+            if(!loginResponse.success) {
+                toast.error(loginResponse.error);
+                return;
+            }
+
+            toast.success("Login Successful!!");
 
             if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
+            toast.dismiss(loadingToastId);
+
             if (error instanceof Error) {
-                console.log(error.message);
+                toast.error(error.message);
                 setIsAutheticating(false);
                 return;
             }
 
-            console.log(error);
+            toast.error("Internal Server Error!!");
             setIsAutheticating(false);
         }
     };
 
     const signInWithGithub = async (authDomain: string) => {
+        const loadingToastId = toast.loading("Signin In...");
         setIsAutheticating(true);
 
         try {
@@ -100,6 +115,8 @@ const LoginBtn = (props: Props) => {
                 !githubFirebaseResponse.user.providerData[0].email ||
                 !githubFirebaseResponse.user.providerData[0].photoURL
             ) {
+                toast.dismiss(loadingToastId);
+                toast.error("Login Failed... Valid login data not available, please contact support...");
                 setIsAutheticating(false);
                 return;
             }
@@ -118,17 +135,27 @@ const LoginBtn = (props: Props) => {
 
             console.log(loginResponse);
 
+            toast.dismiss(loadingToastId);
             setIsAutheticating(false);
+
+            if(!loginResponse.success) {
+                toast.error(loginResponse.error);
+                return;
+            }
+
+            toast.success("Login Successful!!");
 
             if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
+            toast.dismiss(loadingToastId);
+
             if (error instanceof Error) {
-                console.log(error.message);
+                toast.error(error.message);
                 setIsAutheticating(false);
                 return;
             }
 
-            console.log(error);
+            toast.error("Internal Server Error!!");
             setIsAutheticating(false);
         }
     };
@@ -137,14 +164,14 @@ const LoginBtn = (props: Props) => {
         if (isAuthenticating) return;
 
         if (!authUrl) {
-            console.log("Give a valid URL to authenticate...");
+            toast.error("Give a valid URL to authenticate...");
             return;
         }
 
         const domainResponse = getUrlDomain(authUrl);
 
         if (!domainResponse.success || !domainResponse.data) {
-            console.log(domainResponse.error);
+            toast.error(domainResponse.error ?? "Internal Server Error!!");
             return;
         }
 

@@ -1,6 +1,6 @@
 import { ThemeProvider } from "components/theme-provider";
 import { ThemeToggler } from "components/theme-toggler";
-import { RecoilContextProvider } from "components/elements";
+import { CustomToaster, RecoilContextProvider } from "components/elements";
 import "./globals.css";
 
 export default function RootLayout({
@@ -15,6 +15,7 @@ export default function RootLayout({
                 <RecoilContextProvider>
                     <ThemeProvider>
                         {children}
+                        <CustomToaster />
                         <ThemeToggler />
                     </ThemeProvider>
                 </RecoilContextProvider>

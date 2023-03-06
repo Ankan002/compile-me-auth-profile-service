@@ -14,16 +14,15 @@ export default function Home(props: Props) {
     const { authUrlToken } = searchParams;
     let authUrl: string | null = null;
 
-    if (!authUrlToken) {
-        console.log("Give a valid URL Token to authenticate...");
-        return;
+    if (authUrlToken) {
+        const authUrlResponse = decodeAuthUrl(authUrlToken);
+
+        if (authUrlResponse.success && authUrlResponse.data) {
+            authUrl = authUrlResponse.data.authUrl;
+        }
     }
 
-    const authUrlResponse = decodeAuthUrl(authUrlToken);
-
-    if (authUrlResponse.success && authUrlResponse.data) {
-        authUrl = authUrlResponse.data.authUrl;
-    }
+    
 
     return (
         <main className="min-h-screen flex flex-col w-full bg-primary-light dark:bg-primary-dark items-center justify-center p-3">
