@@ -74,7 +74,7 @@ const LoginBtn = (props: Props) => {
 
             toast.success("Login Successful!!");
 
-            // if(window !== undefined && authUrl) location.href = authUrl;
+            if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             toast.dismiss(loadingToastId);
 

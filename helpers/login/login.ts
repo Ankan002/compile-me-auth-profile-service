@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validMicroserviceDomains } from "constants/valid-microservice-domains";
 
 const LoginUserPayloadSchema = z.object({
     name: z
@@ -13,7 +14,7 @@ const LoginUserPayloadSchema = z.object({
     profile_pic: z.string().url(),
 });
 
-type LoginUserPayload = z.infer<typeof LoginUserPayloadSchema>
+type LoginUserPayload = z.infer<typeof LoginUserPayloadSchema>;
 
 const SuccessResponseSchema = z.object({
     success: z.literal(true),
@@ -29,13 +30,25 @@ export const login = async (
     loginUserPayload: LoginUserPayload
 ) => {
     try {
-        const loginUserPayloadSchemaValidationResult = LoginUserPayloadSchema.safeParse(loginUserPayload);
-
-        if(!loginUserPayloadSchemaValidationResult.success) {
+        if (
+            process.env.NEXT_PUBLIC_ENV === "production" &&
+            !validMicroserviceDomains.includes(authDomain)
+        ) {
             return {
                 success: false,
-                error: loginUserPayloadSchemaValidationResult.error.errors[0].message
-            }
+                error: "Invalid Service Domain",
+            };
+        }
+
+        const loginUserPayloadSchemaValidationResult =
+            LoginUserPayloadSchema.safeParse(loginUserPayload);
+
+        if (!loginUserPayloadSchemaValidationResult.success) {
+            return {
+                success: false,
+                error: loginUserPayloadSchemaValidationResult.error.errors[0]
+                    .message,
+            };
         }
 
         const loginResponse = await fetch("/api/auth/login", {
@@ -44,7 +57,6 @@ export const login = async (
                 "content-type": "application/json",
             },
             body: JSON.stringify({
-                domain_to_be_authenticated: authDomain,
                 user: loginUserPayload,
             }),
             credentials: "include",
@@ -59,7 +71,8 @@ export const login = async (
             if (!errorLoginResponseValidationResult.success) {
                 return {
                     success: false,
-                    error: errorLoginResponseValidationResult.error.errors[0].message,
+                    error: errorLoginResponseValidationResult.error.errors[0]
+                        .message,
                 };
             }
 
@@ -77,7 +90,8 @@ export const login = async (
         if (!successLoginResponseDataValidationResult.success) {
             return {
                 success: false,
-                error: successLoginResponseDataValidationResult.error.errors[0].message,
+                error: successLoginResponseDataValidationResult.error.errors[0]
+                    .message,
             };
         }
 
