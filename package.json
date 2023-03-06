@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build-dev": "next build",
+    "build": "npx prisma db push --accept-data-loss && next build",
     "db-push": "npx prisma db push",
     "db-pull": "npx prisma db pull",
     "db-generate": "npx prisma generate",
