@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 import { z } from "zod";
-import { validMicroserviceDomains } from "constants/valid-microservice-domains";
 import { getPrismaClient } from "config/get-primsa-client";
 import jwt from "jsonwebtoken";
 import { addDays } from "date-fns";
@@ -17,7 +16,6 @@ interface ErrorResponse {
 }
 
 const RequestBodySchema = z.object({
-    domain_to_be_authenticated: z.string(),
     user: z.object({
         name: z
             .string()
@@ -54,20 +52,6 @@ const login = async (
 
     const requestBody = requestBodyValidationResult.data;
 
-    console.log(requestBody.domain_to_be_authenticated);
-
-    if (
-        process.env.NODE_ENV === "production" &&
-        !validMicroserviceDomains.includes(
-            requestBody.domain_to_be_authenticated
-        )
-    ) {
-        return res.status(400).json({
-            success: false,
-            error: "Invalid service domain",
-        });
-    }
-
     const prisma = getPrismaClient();
     
     const AUTH_JWT_SECRET = process.env.AUTH_JWT_SECRET ?? "";
@@ -102,7 +86,7 @@ const login = async (
             setCookie(process.env.AUTH_COOKIE_NAME ?? "", authToken, {
                 domain:
                     process.env.NODE_ENV === "production"
-                        ? "playground.compile-me.com"
+                        ? process.env.AUTH_COOKIE_URL 
                         : "localhost",
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production" ? true : false,
@@ -163,7 +147,7 @@ const login = async (
         setCookie(process.env.AUTH_COOKIE_NAME ?? "", authToken, {
             domain:
                 process.env.NODE_ENV === "production"
-                    ? requestBody.domain_to_be_authenticated
+                    ? process.env.AUTH_COOKIE_URL 
                     : "localhost",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production" ? true : false,
