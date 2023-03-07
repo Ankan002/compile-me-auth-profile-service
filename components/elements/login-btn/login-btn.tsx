@@ -126,7 +126,8 @@ const LoginBtn = (props: Props) => {
             const loginName = githubFirebaseResponse.user.providerData[0].displayName ?? uniqueNamesGenerator({
                 dictionaries: [colors, animals],
                 separator: " ",
-                length: 2
+                length: 2,
+                style: "capital"
             });
 
             const loginResponse = await login(authDomain, {
