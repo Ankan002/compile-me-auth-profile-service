@@ -88,7 +88,6 @@ const LoginBtn = (props: Props) => {
         }
     };
 
-    // TODO: Test out the GITHUB USER with realtime user.
     const signInWithGithub = async (authDomain: string) => {
         const loadingToastId = toast.loading("Signin In...");
         setIsAutheticating(true);
@@ -106,9 +105,6 @@ const LoginBtn = (props: Props) => {
             const githubFirebaseUserInfo = getAdditionalUserInfo(
                 githubFirebaseResponse
             );
-
-            console.log(githubFirebaseResponse);
-            console.log(githubFirebaseUserInfo);
 
             await signOut(auth);
 
@@ -142,8 +138,6 @@ const LoginBtn = (props: Props) => {
                     .html_url as string,
             });
 
-            console.log(loginResponse);
-
             toast.dismiss(loadingToastId);
             setIsAutheticating(false);
 
@@ -154,7 +148,7 @@ const LoginBtn = (props: Props) => {
 
             toast.success("Login Successful!!");
 
-            // if(window !== undefined && authUrl) location.href = authUrl;
+            if(window !== undefined && authUrl) location.href = authUrl;
         } catch (error) {
             toast.dismiss(loadingToastId);
 

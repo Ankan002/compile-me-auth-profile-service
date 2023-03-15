@@ -1,7 +1,9 @@
-import { LoginBtn } from "components/elements";
+import { LoginBtn, Redirect } from "components/elements";
 import LoginHeroImage from "assets/login-hero-image.png";
 import Image from "next/image";
 import { decodeAuthUrl } from "utils";
+import { cookies } from "next/headers"; 
+import { redirect } from "next/navigation";
 
 interface Props {
     searchParams: {
@@ -14,10 +16,17 @@ export default function Home(props: Props) {
     const { authUrlToken } = searchParams;
     let authUrl: string | null = null;
 
+    const nextCookies = cookies();
+    const authCookieToken = nextCookies.get(process.env.AUTH_COOKIE_NAME ?? "")?.value;
+
     if (authUrlToken) {
         const authUrlResponse = decodeAuthUrl(authUrlToken);
 
         if (authUrlResponse.success && authUrlResponse.data) {
+            if(authCookieToken) {
+                return <Redirect redirectUrl={authUrlResponse.data.authUrl} />
+            }
+
             authUrl = authUrlResponse.data.authUrl;
         }
     }

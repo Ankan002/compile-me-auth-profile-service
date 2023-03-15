@@ -16,15 +16,11 @@ export const decodeAuthUrl = (encodedAuthUrl: string) => {
         };
     } catch (error) {
         if (error instanceof Error) {
-            console.log(error.message);
-
             return {
                 success: false,
                 error: error.message,
             };
         }
-
-        console.log(error);
 
         return {
             success: false,
